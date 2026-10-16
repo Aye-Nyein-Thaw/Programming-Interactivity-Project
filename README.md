@@ -22,7 +22,7 @@ A satellite image is only a grid of pixels. Computer vision can find objects in 
 - **Step 4, combining demo:** one button switches between the separate results for each tile and the combined result.
 - **Real satellite image example:** three buttons switch between the plain image, building outlines and filled building polygons, plus a button that shows or hides an 8-tile grid drawn on top.
 - **Step 5, georeferencing:** two side-by-side drawings compare a position in the image (pixels) with a position on the map (latitude and longitude), followed by an interactive Leaflet map. It loads a GeoJSON file of 19 building polygons, draws them on satellite background pictures, and shows a building's ID when it is clicked.
-- **Case study: Solar Site Identification:** a Leaflet map of 7 buildings coloured by annual energy value, with filters (minimum annual energy, roof material, minimum roof area, solar already installed, building ID search, reset), a button that hides or shows the building outlines, a legend, a building count and a details panel for the clicked building.
+- **Case study: Solar Site Identification:** a Leaflet map of multiple buildings coloured by annual energy value, with filters (minimum annual energy, roof material, minimum roof area, solar already installed, building ID search, reset), a button that hides or shows the building outlines, a legend, a building count and a details panel for the clicked building.
 
 ## Technologies
 
@@ -43,17 +43,8 @@ A local server is **required**: the maps load their GeoJSON files with `fetch`, 
 
 - The demos use **prepared images**. The page does **not** run any AI model, does not cut or process any image, and does not detect buildings itself. Switching views only shows and hides pictures that were made in advance.
 - The Step 5 map shows pre-made building polygons stored in a GeoJSON file.
-- The Solar Site Identification demo uses **sample data**: its building IDs start with `DEMO-` and the page labels the values as synthetic. Energy values are illustrative only and are not real solar assessments.
+- The Solar Site Identification demo uses **sample data**: its building IDs start with `DEMO-`. Energy values are illustrative only and are not real solar assessments.
 - The colour limits in the solar map are fixed numbers chosen for the sample file.
-- AI results in real projects can be wrong and usually need to be checked by people.
-
-## Data and credits
-
-Only the credits that can be confirmed from the project files are listed here.
-
-- **Map background:** Tiles © Esri — Source: Esri, Vantor, Earthstar Geographics, and the GIS User Community (Esri World Imagery). This credit is also shown in the corner of both maps and must stay there. Check Esri's current terms of use before using the project beyond coursework.
-- **Map library:** Leaflet 1.9.4.
-- **Not yet documented (add before publishing):** the source and licence of the satellite/aerial images in `assets/` (including the hero image), of the building outlines in `data/data_for_georeference_section.geojson`, and of the building shapes in `data/sample_data_for_Claude.geojson`. The project files do not record them, so none are claimed here.
 
 ## Acknowledgements
 
