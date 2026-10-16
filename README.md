@@ -46,10 +46,6 @@ A local server is **required**: the maps load their GeoJSON files with `fetch`, 
 - The Solar Site Identification demo uses **sample data**: its building IDs start with `DEMO-`. Energy values are illustrative only and are not real solar assessments.
 - The colour limits in the solar map are fixed numbers chosen for the sample file.
 
-## Acknowledgements
-
-Thanks to the Leaflet project for the mapping library and to Esri for the World Imagery background tiles.
-
 ## Project structure
 
 ```
