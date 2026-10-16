@@ -39,13 +39,6 @@ A satellite image is only a grid of pixels. Computer vision can find objects in 
 
 A local server is **required**: the maps load their GeoJSON files with `fetch`, which browsers block when you simply double-click `index.html`. An **internet connection** is also needed for Leaflet and the satellite background pictures. Everything else works offline.
 
-## Limitations
-
-- The demos use **prepared images**. The page does **not** run any AI model, does not cut or process any image, and does not detect buildings itself. Switching views only shows and hides pictures that were made in advance.
-- The Step 5 map shows pre-made building polygons stored in a GeoJSON file.
-- The Solar Site Identification demo uses **sample data**: its building IDs start with `DEMO-`. Energy values are illustrative only and are not real solar assessments.
-- The colour limits in the solar map are fixed numbers chosen for the sample file.
-
 ## Project structure
 
 ```
