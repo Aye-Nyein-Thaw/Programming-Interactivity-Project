@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 925 810" role="img" aria-label="Green grid lines dividing the image into four numbered tiles">
+<!-- 2 x 2 grid that sits exactly on top of study-area.jpg (925 x 810 pixels).
+     The lines are at x = 462 and y = 405: the same places where tile-1.jpg to tile-4.jpg were cut.
+     A dark line is drawn first and the green line on top, so the grid stays visible on white roofs. -->
+<g stroke-dasharray="16 10" fill="none">
+<line x1="462" y1="0" x2="462" y2="810" stroke="#0b3d1e" stroke-width="9"/>
+<line x1="0" y1="405" x2="925" y2="405" stroke="#0b3d1e" stroke-width="9"/>
+<line x1="462" y1="0" x2="462" y2="810" stroke="#39e75f" stroke-width="5"/>
+<line x1="0" y1="405" x2="925" y2="405" stroke="#39e75f" stroke-width="5"/>
+</g>
+<g fill="#39e75f" stroke="#0b3d1e" stroke-width="3">
+<circle cx="36" cy="36" r="24"/>
+<circle cx="498" cy="36" r="24"/>
+<circle cx="36" cy="441" r="24"/>
+<circle cx="498" cy="441" r="24"/>
+</g>
+<g font-family="Arial, sans-serif" font-size="26" font-weight="bold" fill="#0b3d1e" text-anchor="middle">
+<text x="36" y="45">1</text>
+<text x="498" y="45">2</text>
+<text x="36" y="450">3</text>
+<text x="498" y="450">4</text>
+</g>
+</svg>

@@ -1,0 +1,721 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>From Pixels to Decisions</title>
+    <!-- Leaflet: small map library, used only for the map in Step 5 -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- ===== OPENING SECTION ===== -->
+    <header class="hero">
+      <div class="container">
+        <h1>From Pixels to Decisions</h1>
+        <p class="subtitle">
+          How computer vision turns satellite imagery into useful information.
+        </p>
+        <p class="opening-question">
+          How can satellite images help us understand places and solve
+          real-world problems ?
+        </p>
+
+        <figure>
+          <img
+            src="assets/hero_wallpaper.jpg"
+            alt="Aerial view showing buildings, roads and green areas"
+          />
+        </figure>
+      </div>
+    </header>
+
+    <main>
+      <!-- ===== STEP 1: start with a large image ===== -->
+      <section class="step" id="step-1">
+        <div class="container">
+          <p class="step-label">Step 1</p>
+          <h2>Start with a large satellite image</h2>
+          <p>
+            We begin with an image that covers the area we want to study. It
+            shows buildings, roads, vegetation, and other features from above.
+          </p>
+
+          <figure class="figure-medium">
+            <img
+              src="assets/study-area.jpg"
+              alt="Satellite image of the study area: large white-roofed buildings, car parks, roads and trees"
+            />
+          </figure>
+
+          <!-- Short note about mosaicking and alignment -->
+          <div class="note-box">
+            <p>
+              <strong>Good to know:</strong> If one image is not enough to cover
+              the area, several neighboring images may first be combined into a
+              larger image. This is called <strong>mosaicking</strong>. The
+              images also need to line up, so the same buildings and roads
+              appear in the right positions. Not every project needs this.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== STEP 2: split into tiles ===== -->
+      <section class="step" id="step-2">
+        <div class="container">
+          <p class="step-label">Step 2</p>
+          <h2>Split the image into smaller tiles</h2>
+          <p>
+            A large image is divided into smaller images, often using a grid, so
+            that the AI system can process them. This is called
+            <strong>tiling</strong>.
+          </p>
+
+          <!-- Interaction 1: original -> grid -> tiles -->
+          <div class="demo">
+            <h3>How does tiling work?</h3>
+            <p>Choose a view. All three views use the same image.</p>
+
+            <div class="button-row">
+              <button id="original-button" type="button" aria-pressed="true">
+                1. Original image
+              </button>
+              <button id="grid-button" type="button" aria-pressed="false">
+                2. Show the grid
+              </button>
+              <button id="tiles-button" type="button" aria-pressed="false">
+                3. Split into tiles
+              </button>
+            </div>
+
+            <!-- View 1: the original image (visible at the start) -->
+            <!-- All three views have the class "tiling-view", so they are shown at the same size -->
+            <div id="original-view" class="tiling-view">
+              <img
+                src="assets/study-area.jpg"
+                alt="Satellite image of the study area"
+              />
+            </div>
+
+            <!-- View 2: the same image with a grid on top (hidden at the start) -->
+            <div id="grid-view" class="tiling-view image-wrapper hidden">
+              <img
+                src="assets/study-area.jpg"
+                alt="Satellite image of the study area"
+              />
+              <img
+                class="overlay"
+                src="assets/tile-grid-overlay.svg"
+                alt="Green dashed grid lines dividing the image into four numbered tiles"
+              />
+            </div>
+
+            <!-- View 3: the four separate tiles (hidden at the start) -->
+            <div id="tiles-view" class="tiling-view tiles-grid hidden">
+              <img src="assets/tile-1.jpg" alt="Tile 1, top left" />
+              <img src="assets/tile-2.jpg" alt="Tile 2, top right" />
+              <img src="assets/tile-3.jpg" alt="Tile 3, bottom left" />
+              <img src="assets/tile-4.jpg" alt="Tile 4, bottom right" />
+            </div>
+
+            <p id="tiling-status" class="status" aria-live="polite">
+              Showing: the original large image.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== STEP 3: AI analyzes each tile ===== -->
+      <section class="step" id="step-3">
+        <div class="container">
+          <p class="step-label">Step 3</p>
+          <h2>AI analyzes each tile</h2>
+          <p>
+            The AI system looks at each small image and looks for features in
+            it. Its answers are called <strong>predictions</strong>. Here, the
+            AI marks the exact shape of each building. This is called
+            <strong>segmentation</strong>, and each shape can be saved as a
+            <strong>building polygon</strong>.
+          </p>
+
+          <div class="image-pair">
+            <figure>
+              <img
+                src="assets/tile-1-results.jpg"
+                alt="Tile 1 with the buildings filled in red"
+              />
+              <figcaption>
+                <strong>Tile 1:</strong> the shape of each building in red.
+              </figcaption>
+            </figure>
+            <figure>
+              <img
+                src="assets/tile-2-results.jpg"
+                alt="Tile 2 with the buildings filled in red"
+              />
+              <figcaption>
+                <strong>Tile 2:</strong> the shape of each building in red.
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== STEP 4: combine and check ===== -->
+      <section class="step" id="step-4">
+        <div class="container">
+          <p class="step-label">Step 4</p>
+          <h2>Combine and clean up the results</h2>
+          <p>
+            The results from the individual tiles must be brought together to
+            form a complete view of the study area. Some results may need to be
+            merged or checked, especially near tile boundaries, where one
+            building can be cut into pieces.
+          </p>
+          <p>
+            This clean-up is called <strong>post-processing</strong>. Typical
+            jobs are: joining the pieces of a building that was cut by a tile
+            edge, removing a building that was found twice, removing tiny shapes
+            that are probably mistakes, and tidying up wobbly outlines.
+          </p>
+
+          <!-- Interaction 2: separate tile results -> combined results -->
+          <div class="demo">
+            <h3>From tile results to one result</h3>
+            <p>
+              Each tile has its own results. Click the button to bring them
+              together or split them apart.
+            </p>
+
+            <!-- Separate results for each tile (visible at the start) -->
+            <div id="tile-results-view" class="tiles-grid">
+              <img
+                src="assets/tile-1-results.jpg"
+                alt="Illustration of results for tile 1"
+              />
+              <img
+                src="assets/tile-2-results.jpg"
+                alt="Illustration of results for tile 2"
+              />
+              <img
+                src="assets/tile-3-results.jpg"
+                alt="Illustration of results for tile 3"
+              />
+              <img
+                src="assets/tile-4-results.jpg"
+                alt="Illustration of results for tile 4"
+              />
+            </div>
+
+            <!-- Combined results (hidden at the start) -->
+            <img
+              id="combined-results-view"
+              class="hidden"
+              src="assets/combined-results.jpg"
+              alt="Illustration of the combined building results for the whole area"
+            />
+
+            <button
+              id="combine-results-button"
+              type="button"
+              aria-pressed="false"
+            >
+              Combine results
+            </button>
+            <p id="results-status" class="status" aria-live="polite">
+              Showing: separate results for each tile.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== REAL EXAMPLE: between Step 4 and Step 5 ===== -->
+      <section class="step" id="real-scene">
+        <div class="container">
+          <p class="step-label">Real example</p>
+          <h2>See it on a real satellite image</h2>
+
+          <!-- Interaction 3 (real scene): switch between three prepared versions of the same real satellite scene -->
+          <div class="demo">
+            <p>
+              Choose a view. All three pictures show the same scene; only the
+              building drawing on top changes.
+            </p>
+
+            <div class="button-row">
+              <button id="scene-plain-button" type="button" aria-pressed="true">
+                Satellite image
+              </button>
+              <button
+                id="scene-outline-button"
+                type="button"
+                aria-pressed="false"
+              >
+                Building outlines
+              </button>
+              <button
+                id="scene-filled-button"
+                type="button"
+                aria-pressed="false"
+              >
+                Building Polygons
+              </button>
+            </div>
+
+            <!-- The three images sit on top of each other. Only one is visible at a time. -->
+            <div class="scene-wrapper">
+              <img
+                id="scene-plain"
+                src="assets/sample_satellite_image.jpg"
+                alt="Satellite image of an industrial area with large white-roofed buildings, roads and trees"
+              />
+              <img
+                id="scene-outline"
+                class="hidden"
+                src="assets/sample_satellite_image_with_outline.jpg"
+                alt="The same satellite image with red outlines around the buildings"
+              />
+              <img
+                id="scene-filled"
+                class="hidden"
+                src="assets/sample_satellite_image_with_polygon.jpg"
+                alt="The same satellite image with the buildings filled in red"
+              />
+
+              <!-- Tile grid: plain HTML boxes drawn on top of the image with CSS. The image itself is not changed. -->
+              <div id="scene-grid" class="scene-grid hidden" aria-hidden="true">
+                <div><span>1</span></div>
+                <div><span>2</span></div>
+                <div><span>3</span></div>
+                <div><span>4</span></div>
+                <div><span>5</span></div>
+                <div><span>6</span></div>
+                <div><span>7</span></div>
+                <div><span>8</span></div>
+              </div>
+            </div>
+
+            <button id="grid-toggle-button" type="button" aria-pressed="false">
+              Show tile grid
+            </button>
+
+            <p id="scene-status" class="status" aria-live="polite">
+              Showing: the satellite image without any drawing.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== STEP 5: georeferencing ===== -->
+      <section class="step" id="step-5">
+        <div class="container">
+          <p class="step-label">Step 5</p>
+          <h2>Put the results on the map</h2>
+          <p>
+            So far, the AI only knows where a building is
+            <em>inside the picture</em>, for example "300 pixels from the left
+            and 120 pixels from the top". That position means nothing outside
+            this one image.
+          </p>
+          <p>
+            <strong>Georeferencing</strong> links the picture to the real world.
+            It tells us which place on Earth each part of the image shows.
+            Satellite images usually come with this information, such as the
+            real-world location of the image corners. With it, every building
+            outline can be moved from picture positions to map positions
+            (longitude and latitude).
+          </p>
+
+          <!-- Two cards that compare the two kinds of position (reuses the existing card style).
+               Both pictures are the same inline SVG drawing; only the corner labels change. -->
+          <div class="card-row">
+            <div class="card">
+              <h3>Position in the image</h3>
+              <svg
+                class="coord-figure"
+                viewBox="0 0 400 300"
+                role="img"
+                aria-labelledby="coord-title-pixel"
+              >
+                <title id="coord-title-pixel">
+                  Image coordinates: a green image with a building in the
+                  middle. Corners labelled in pixels: (0, 0) top left, (width,
+                  0) top right, (0, height) bottom left, (width, height) bottom
+                  right.
+                </title>
+                <!-- The "satellite image": a plain green rectangle -->
+                <rect
+                  x="20"
+                  y="40"
+                  width="360"
+                  height="190"
+                  fill="#7cb66a"
+                  stroke="#4e8a3e"
+                  stroke-width="2"
+                />
+                <!-- Arrows: x counts to the right, y counts DOWN -->
+                <g class="coord-hint">
+                  <text x="40" y="66">x →</text>
+                  <text x="40" y="96">y ↓</text>
+                </g>
+                <!-- The building (seen from above) in the middle -->
+                <rect
+                  x="165"
+                  y="100"
+                  width="70"
+                  height="70"
+                  fill="#e8ecef"
+                  stroke="#e63946"
+                  stroke-width="4"
+                />
+                <rect x="185" y="120" width="30" height="30" fill="#c9d1d6" />
+                <!-- A dot on each corner -->
+                <g fill="#12263a">
+                  <circle cx="20" cy="40" r="5" />
+                  <circle cx="380" cy="40" r="5" />
+                  <circle cx="20" cy="230" r="5" />
+                  <circle cx="380" cy="230" r="5" />
+                </g>
+                <!-- Corner labels -->
+                <g class="coord-label coord-label-pixel">
+                  <text x="14" y="28">(0, 0)</text>
+                  <text x="386" y="28" text-anchor="end">(width, 0)</text>
+                  <text x="14" y="254">(0, height)</text>
+                  <text x="386" y="254" text-anchor="end">(width, height)</text>
+                </g>
+                <text class="coord-units" x="200" y="288" text-anchor="middle">
+                  Units: pixels (counted from the top-left corner)
+                </text>
+              </svg>
+              <p>
+                Counted in pixels: how far right and how far down. Only makes
+                sense for this one picture.
+              </p>
+            </div>
+            <div class="card">
+              <h3>Position on the map</h3>
+              <svg
+                class="coord-figure"
+                viewBox="0 0 400 300"
+                role="img"
+                aria-labelledby="coord-title-geo"
+              >
+                <title id="coord-title-geo">
+                  Map coordinates: the same green image and building. Corners
+                  labelled with illustrative latitude and longitude: 50.906 N
+                  1.415 W top left, 50.906 N 1.405 W top right, 50.900 N 1.415 W
+                  bottom left, 50.900 N 1.405 W bottom right.
+                </title>
+                <!-- The "satellite image": a plain green rectangle -->
+                <rect
+                  x="20"
+                  y="40"
+                  width="360"
+                  height="190"
+                  fill="#7cb66a"
+                  stroke="#4e8a3e"
+                  stroke-width="2"
+                />
+                <!-- North arrow: on a map, positions are measured on the Earth, not in the picture -->
+                <g class="coord-hint">
+                  <text x="40" y="66">N ↑</text>
+                </g>
+                <!-- The building (seen from above) in the middle -->
+                <rect
+                  x="165"
+                  y="100"
+                  width="70"
+                  height="70"
+                  fill="#e8ecef"
+                  stroke="#e63946"
+                  stroke-width="4"
+                />
+                <rect x="185" y="120" width="30" height="30" fill="#c9d1d6" />
+                <!-- A dot on each corner -->
+                <g fill="#12263a">
+                  <circle cx="20" cy="40" r="5" />
+                  <circle cx="380" cy="40" r="5" />
+                  <circle cx="20" cy="230" r="5" />
+                  <circle cx="380" cy="230" r="5" />
+                </g>
+                <!-- Corner labels -->
+                <g class="coord-label coord-label-geo">
+                  <text x="14" y="28">50.906° N, 1.415° W</text>
+                  <text x="386" y="28" text-anchor="end">
+                    50.906° N, 1.405° W
+                  </text>
+                  <text x="14" y="254">50.900° N, 1.415° W</text>
+                  <text x="386" y="254" text-anchor="end">
+                    50.900° N, 1.405° W
+                  </text>
+                </g>
+                <text class="coord-units" x="200" y="288" text-anchor="middle">
+                  Units: degrees of latitude and longitude
+                </text>
+              </svg>
+              <p>
+                Latitude and longitude: a real place on Earth. Can be shown on
+                any map and combined with other data. (The numbers in this
+                picture are examples.)
+              </p>
+            </div>
+          </div>
+
+          <div class="note-box">
+            <p>
+              <strong>Why it matters:</strong> once the buildings have real
+              locations, we can show them on a map, measure them, and compare
+              them with other information, such as roads, schools or older
+              images of the same place.
+            </p>
+          </div>
+
+          <!-- Interaction 4: interactive map with the building polygons -->
+          <div class="demo">
+            <h3>The buildings on a real map</h3>
+            <p>
+              These building outlines are stored with longitude and latitude, so
+              the map can place them exactly. Drag to move, use + and &minus; to
+              zoom, and click a building to see its ID.
+            </p>
+
+            <!-- Leaflet draws the map inside this empty box -->
+            <div id="building-map" class="building-map"></div>
+
+            <p id="map-status" class="status" aria-live="polite">
+              Loading the building data...
+            </p>
+            <!-- Shown only if the background satellite pictures cannot be loaded (see script.js) -->
+            <p id="map-tile-warning" class="note hidden">
+              The background satellite pictures could not be loaded. The
+              building outlines are still shown.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== CASE STUDY: SOLAR SITE IDENTIFICATION ===== -->
+      <section class="step" id="solar-case-study">
+        <div class="container">
+          <p class="step-label">Case study</p>
+          <h2>Case Study: Solar Site Identification</h2>
+
+          <!-- Three short parts, reusing the existing card style -->
+          <div class="card-row">
+            <div class="card">
+              <h3>The challenge</h3>
+              <p>
+                Checking buildings for solar one by one takes a long time. Over
+                a large area, someone has to collect information about many
+                individual rooftops.
+              </p>
+            </div>
+            <div class="card">
+              <h3>How geospatial AI helps</h3>
+              <p>
+                Computer vision finds buildings in satellite images and measures
+                useful rooftop details. Public datasets and APIs, and paid
+                imagery or data when needed, add more information. Together they
+                form one searchable building dataset.
+              </p>
+            </div>
+            <div class="card">
+              <h3>The result</h3>
+              <p>
+                People can explore the buildings on a map and filter them to
+                find promising candidates for a proper solar assessment.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- The interactive part uses a wider container so filters, map and details fit side by side -->
+        <div class="container container-wide">
+          <!-- Interaction 5: solar map with colors, filters and building details -->
+          <div class="demo">
+            <h3>Explore the buildings</h3>
+            <p class="demo-warning">
+              <strong>Demonstration with sample data.</strong> The building IDs
+              and all values are synthetic sample values. Energy yields are
+              illustrative only and are not verified solar assessments.
+            </p>
+
+            <!-- Three columns: filters | map + legend | building details (see "Solar layout" in style.css) -->
+            <div class="solar-layout">
+              <!-- Left column: filters. Every change runs applySolarFilters() in script.js -->
+              <div class="solar-filters">
+                <h4 class="column-title">Filter and search</h4>
+                <div class="filter-grid">
+                  <div class="filter">
+                    <label for="energy-filter"
+                      >Minimum annual energy (kWh/year)</label
+                    >
+                    <input
+                      id="energy-filter"
+                      type="range"
+                      min="1500000"
+                      max="4800000"
+                      step="100000"
+                      value="1500000"
+                    />
+                    <p id="energy-filter-value" class="filter-value">Any</p>
+                  </div>
+
+                  <div class="filter">
+                    <!-- A dropdown with checkboxes, built from <details>. The checkboxes are added by script.js from the data. -->
+                    <span class="filter-label">Roof material</span>
+                    <details id="material-dropdown" class="material-dropdown">
+                      <summary id="material-summary">Any material</summary>
+                      <div id="material-options" class="material-options"></div>
+                    </details>
+                  </div>
+
+                  <div class="filter">
+                    <label for="roof-area-filter">Minimum roof area (m²)</label>
+                    <input
+                      id="roof-area-filter"
+                      type="number"
+                      min="0"
+                      step="1000"
+                      placeholder="Any"
+                    />
+                  </div>
+
+                  <div class="filter">
+                    <label for="installed-filter"
+                      >Solar panels already installed</label
+                    >
+                    <select id="installed-filter">
+                      <option value="all">All</option>
+                      <option value="yes">Installed</option>
+                      <option value="no">Not installed</option>
+                    </select>
+                  </div>
+
+                  <div class="filter">
+                    <label for="id-filter">Building ID</label>
+                    <input
+                      id="id-filter"
+                      type="text"
+                      placeholder="e.g. DEMO-B10312"
+                    />
+                  </div>
+
+                  <div class="filter filter-buttons">
+                    <button id="reset-filters-button" type="button">
+                      Reset filters
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Middle column: map, legend and count -->
+              <div class="solar-map-column">
+                <div class="button-row solar-map-buttons">
+                  <button
+                    id="solar-overlay-button"
+                    type="button"
+                    aria-pressed="true"
+                  >
+                    Hide building outlines
+                  </button>
+                </div>
+
+                <!-- Leaflet draws the map inside this empty box -->
+                <div id="solar-map" class="building-map"></div>
+
+                <!-- Legend: the colors match getEnergyColor() in script.js -->
+                <ul class="legend" aria-label="Map legend">
+                  <li>
+                    <span
+                      class="legend-swatch"
+                      style="background-color: #2e9e44"
+                    ></span
+                    >Lower energy (under 1.7 million kWh/year)
+                  </li>
+                  <li>
+                    <span
+                      class="legend-swatch"
+                      style="background-color: #f4a300"
+                    ></span
+                    >Medium (1.7 to 3 million kWh/year)
+                  </li>
+                  <li>
+                    <span
+                      class="legend-swatch"
+                      style="background-color: #d62828"
+                    ></span
+                    >Higher energy (3 million kWh/year or more)
+                  </li>
+                  <li>
+                    <span
+                      class="legend-swatch"
+                      style="background-color: #9e9e9e"
+                    ></span
+                    >No valid energy value
+                  </li>
+                  <li>
+                    <span class="legend-swatch legend-selected"></span>Selected
+                    building
+                  </li>
+                </ul>
+
+                <p class="note">
+                  Click a colored building to zoom in and see its details. Use +
+                  and &minus; to zoom out again.
+                </p>
+                <p id="solar-count" class="status" aria-live="polite">
+                  Loading the building data...
+                </p>
+
+                <!-- Shown only if the background satellite pictures cannot be loaded -->
+                <p id="solar-tile-warning" class="note hidden">
+                  The background satellite pictures could not be loaded. The
+                  buildings are still shown.
+                </p>
+              </div>
+
+              <!-- Right column: details of the clicked building (filled in by showBuildingDetails() in script.js) -->
+              <div id="building-details" class="details-panel solar-details">
+                <h4>Building details</h4>
+                <p id="details-empty" class="note">
+                  Click a building on the map to see its details.
+                </p>
+                <dl id="details-list" class="details-list hidden">
+                  <dt>Building ID</dt>
+                  <dd id="detail-id"></dd>
+                  <dt>Area name</dt>
+                  <dd id="detail-area"></dd>
+                  <dt>Annual energy yield</dt>
+                  <dd id="detail-energy"></dd>
+                  <dt>Roof material</dt>
+                  <dd id="detail-material"></dd>
+                  <dt>Roof area</dt>
+                  <dd id="detail-roof-area"></dd>
+                  <dt>Building height</dt>
+                  <dd id="detail-height"></dd>
+                  <dt>Solar already installed</dt>
+                  <dd id="detail-installed"></dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Leaflet must load before script.js, because script.js uses it -->
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+    <script src="script.js"></script>
+  </body>
+</html>

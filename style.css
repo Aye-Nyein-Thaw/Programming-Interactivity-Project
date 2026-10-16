@@ -1,0 +1,681 @@
+/* ===== Colors and basic settings ===== */
+:root {
+  --navy: #12263a;
+  --teal: #1b7f79;
+  --teal-dark: #14625d;
+  --light: #f5f7f6;
+  --white: #ffffff;
+  --text: #22313f;
+  --outline-red: #e63946;
+  --grid-green: #39e75f;
+  --grid-green-dark: #0b3d1e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--text);
+  background-color: var(--white);
+}
+
+/* Keeps content in a readable column, centered on the page */
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+figure {
+  margin: 32px 0 0 0;
+}
+
+figcaption {
+  margin-top: 8px;
+  font-size: 14px;
+  color: #5b6b78;
+}
+
+/* ===== Opening section ===== */
+.hero {
+  background-color: var(--navy);
+  color: var(--white);
+  padding: 64px 0 48px 0;
+}
+
+.hero h1 {
+  margin: 0 0 12px 0;
+  font-size: 44px;
+  line-height: 1.15;
+}
+
+.subtitle {
+  margin: 0 0 24px 0;
+  font-size: 22px;
+  color: #c7d6e2;
+}
+
+.opening-question {
+  margin: 0;
+  font-size: 20px;
+  font-style: italic;
+}
+
+.hero figcaption {
+  color: #c7d6e2;
+}
+
+/* ===== Steps ===== */
+.step {
+  padding: 64px 0;
+}
+
+/* Every second step gets a light background so the sequence is easy to see */
+.step:nth-child(even) {
+  background-color: var(--light);
+}
+
+.step-label {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--teal);
+}
+
+h2 {
+  margin: 0 0 16px 0;
+  font-size: 32px;
+  line-height: 1.2;
+  color: var(--navy);
+}
+
+h3 {
+  margin: 0 0 8px 0;
+  font-size: 20px;
+  color: var(--navy);
+}
+
+/* ===== Cards ===== */
+.card-row {
+  display: flex;
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.card {
+  flex: 1;
+  padding: 20px;
+  background-color: var(--white);
+  border-top: 4px solid var(--teal);
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+}
+
+.card p {
+  margin: 0;
+  font-size: 16px;
+}
+
+/* ===== Interactive demos ===== */
+.demo {
+  margin-top: 40px;
+  padding: 24px;
+  background-color: var(--white);
+  border: 1px solid #d5dde2;
+  border-radius: 8px;
+}
+
+/* A demo box that starts with a paragraph (no title) should not have extra space on top */
+.demo > p:first-child {
+  margin-top: 0;
+}
+
+.tiles-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+/* Makes the overlay sit exactly on top of the image */
+.image-wrapper {
+  position: relative;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* This one class does all the showing and hiding */
+.hidden {
+  display: none;
+}
+
+button {
+  margin-top: 16px;
+  padding: 12px 24px;
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--white);
+  background-color: var(--teal);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: var(--teal-dark);
+}
+
+/* Clear outline when using the keyboard */
+button:focus {
+  outline: 3px solid var(--navy);
+  outline-offset: 3px;
+}
+
+.status {
+  margin: 12px 0 0 0;
+  font-weight: bold;
+  color: var(--teal-dark);
+}
+
+.note {
+  margin: 8px 0 0 0;
+  font-size: 14px;
+  color: #5b6b78;
+}
+
+/* A button that is "on" (aria-pressed="true") turns navy, so the visitor sees which view is active */
+button[aria-pressed="true"] {
+  background-color: var(--navy);
+}
+
+/* A row of buttons that wraps onto the next line on small screens */
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.button-row button {
+  margin-top: 0;
+}
+
+/* Short side note (used for mosaicking in Step 1) */
+.note-box {
+  margin-top: 32px;
+  padding: 16px 20px;
+  background-color: var(--light);
+  border-left: 4px solid var(--teal);
+  border-radius: 4px;
+}
+
+.note-box p {
+  margin: 0;
+  font-size: 16px;
+}
+
+/* Two images side by side (Step 3) */
+.image-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* ===== Real satellite scene (Step 3) ===== */
+
+/* The box keeps the shape of the image (1850 wide : 810 high), so the page
+   does not jump when the images are switched. position: relative lets the
+   grid sit on top of the image. */
+.scene-wrapper {
+  position: relative;
+  aspect-ratio: 1850 / 810;
+}
+
+/* All three images fill the same box exactly */
+.scene-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+}
+
+/* The tile grid: 4 columns x 2 rows of empty boxes laid over the image */
+.scene-grid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+}
+
+/* Each tile gets a dashed green border (the "cut lines") */
+.scene-grid div {
+  border: 2px dashed var(--grid-green);
+}
+
+/* Small tile number in the top-left corner of each tile */
+.scene-grid span {
+  display: inline-block;
+  margin: 4px;
+  padding: 0 6px;
+  font-size: 13px;
+  font-weight: bold;
+  color: var(--grid-green-dark);
+  background-color: var(--grid-green);
+  border-radius: 3px;
+}
+
+/* Keep the grid hidden when it has the .hidden class
+   (needed because .scene-grid sets display: grid) */
+.scene-grid.hidden {
+  display: none;
+}
+
+/* ===== Image sizes in Steps 1 and 2 ===== */
+
+/* Step 1: show the large image a bit smaller, centered */
+.figure-medium img {
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.figure-medium figcaption {
+  text-align: center;
+}
+
+/* Step 2: all three tiling views get the same width, so the image,
+   the grid and the tiles are shown at the same scale */
+.tiling-view {
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+/* The tiles view is 4px wider because of the 4px gap between the tiles.
+   This keeps each tile exactly as big as its part of the whole image. */
+.tiling-view.tiles-grid {
+  max-width: 424px;
+  gap: 4px;
+}
+
+/* ===== Interactive map (Step 5) ===== */
+
+/* Long file names may break onto a new line on small screens */
+.note code {
+  overflow-wrap: anywhere;
+}
+
+/* Leaflet needs the map box to have a height, otherwise the map is invisible */
+.building-map {
+  height: 420px;
+  border: 1px solid #d5dde2;
+  border-radius: 6px;
+}
+
+/* ===== Solar case study ===== */
+
+/* Short warning that the data is a demonstration */
+.demo-warning {
+  padding: 10px 14px;
+  font-size: 15px;
+  background-color: #fff6e0;
+  border-left: 4px solid #f4a300;
+  border-radius: 4px;
+}
+
+/* Filters: three columns on wide screens (one column on phones, see the bottom of this file) */
+.filter-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin: 16px 0;
+}
+
+.filter label,
+.filter-label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 15px;
+  font-weight: bold;
+  color: var(--navy);
+}
+
+.filter input[type="number"],
+.filter input[type="text"],
+.filter select,
+.material-dropdown summary {
+  width: 100%;
+  padding: 8px;
+  font-size: 16px;
+  font-family: inherit;
+  color: var(--text);
+  background-color: var(--white);
+  border: 1px solid #b8c4cc;
+  border-radius: 4px;
+}
+
+.filter input[type="range"] {
+  width: 100%;
+}
+
+.filter-value {
+  margin: 0;
+  font-size: 14px;
+  color: #5b6b78;
+}
+
+/* Puts the Reset button at the bottom of its grid cell */
+.filter-buttons {
+  display: flex;
+  align-items: flex-end;
+}
+
+.filter-buttons button {
+  margin-top: 0;
+}
+
+/* Roof material dropdown (<details>): the list of checkboxes opens on top of the page */
+.material-dropdown {
+  position: relative;
+}
+
+.material-dropdown summary {
+  cursor: pointer;
+}
+
+.material-options {
+  position: absolute;
+  z-index: 1000; /* above the Leaflet map */
+  width: 100%;
+  margin-top: 4px;
+  padding: 8px 12px;
+  background-color: var(--white);
+  border: 1px solid #b8c4cc;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.material-options label {
+  display: block;
+  font-size: 15px;
+  font-weight: normal;
+  cursor: pointer;
+}
+
+.solar-map-buttons {
+  margin-bottom: 12px;
+}
+
+/* Legend under the map */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  margin: 12px 0 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+}
+
+.legend li {
+  display: flex;
+  align-items: center;
+}
+
+.legend-swatch {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-right: 6px;
+  border: 1px solid #333333;
+  border-radius: 3px;
+}
+
+/* The selected building gets a thick blue outline on the map */
+.legend-selected {
+  background-color: transparent;
+  border: 3px solid #1e88e5;
+}
+
+/* Details of the clicked building */
+.details-panel {
+  margin-top: 16px;
+  padding: 16px 20px;
+  background-color: var(--light);
+  border-left: 4px solid #1e88e5;
+  border-radius: 4px;
+}
+
+.details-panel h4 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  color: var(--navy);
+}
+
+.details-panel .note {
+  margin: 0;
+}
+
+/* Two columns: name on the left, value on the right */
+.details-list {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 4px 16px;
+  margin: 0;
+  font-size: 16px;
+}
+
+.details-list dt {
+  font-weight: bold;
+}
+
+.details-list dd {
+  margin: 0;
+}
+
+/* Keep the list hidden when it has the .hidden class (needed because it sets display: grid) */
+.details-list.hidden {
+  display: none;
+}
+
+/* ===== Step 5: pixel vs map coordinates pictures ===== */
+
+/* The SVG pictures fill the width of their card, so both are the same size */
+.coord-figure {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 8px 0 12px 0;
+}
+
+/* Corner labels: dark text, easy to read */
+.coord-label {
+  font-size: 15px;
+  font-weight: bold;
+}
+
+/* Pixel labels look like code (counting), map labels use the teal accent color */
+.coord-label-pixel {
+  font-family: "Courier New", monospace;
+  fill: var(--navy);
+}
+
+.coord-label-geo {
+  font-family: Arial, Helvetica, sans-serif;
+  fill: var(--teal-dark);
+}
+
+/* Small arrows inside the green image (x/y or north) */
+.coord-hint {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: bold;
+  fill: var(--white);
+}
+
+.coord-units {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  fill: #5b6b78;
+}
+
+/* ===== Solar layout: filters | map | details ===== */
+
+/* A wider container, used only for the solar map area */
+.container-wide {
+  max-width: 1280px;
+}
+
+/* Three columns on wide screens: fixed-width side columns, the map gets the rest */
+.solar-layout {
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr) 260px;
+  gap: 20px;
+  align-items: start;
+  margin-top: 16px;
+}
+
+.column-title {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  color: var(--navy);
+}
+
+/* In the narrow left column the filters are stacked in one column */
+.solar-filters .filter-grid {
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin: 0;
+}
+
+/* Make the Reset button as wide as the column */
+.solar-filters .filter-buttons button {
+  width: 100%;
+}
+
+/* A taller map in the solar case study */
+.solar-map-column .building-map {
+  height: 540px;
+}
+
+.solar-map-column .solar-map-buttons {
+  margin-bottom: 8px;
+}
+
+/* The details panel is a column now, so no extra space on top */
+.solar-details {
+  margin-top: 0;
+}
+
+/* In the narrow right column, each value goes under its name */
+.solar-details .details-list {
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+
+.solar-details .details-list dd {
+  margin-bottom: 8px;
+  overflow-wrap: anywhere;
+}
+
+/* Medium screens (tablets, small laptops): filters on top, then map and details side by side */
+@media (max-width: 1000px) {
+  .solar-layout {
+    grid-template-columns: minmax(0, 1fr) 240px;
+  }
+
+  .solar-filters {
+    grid-column: 1 / -1; /* the filters use the full width */
+  }
+
+  .solar-filters .filter-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .solar-map-column .building-map {
+    height: 460px;
+  }
+}
+
+/* Small screens: everything in one column */
+@media (max-width: 700px) {
+  .solar-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .solar-filters .filter-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .solar-map-column .building-map {
+    height: 380px;
+  }
+}
+
+/* ===== Small screens (phones) ===== */
+@media (max-width: 600px) {
+  body {
+    font-size: 17px;
+  }
+
+  .hero h1 {
+    font-size: 34px;
+  }
+
+  .subtitle {
+    font-size: 19px;
+  }
+
+  h2 {
+    font-size: 26px;
+  }
+
+  .card-row {
+    flex-direction: column;
+  }
+
+  .demo {
+    padding: 16px;
+  }
+
+  .image-pair {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .building-map {
+    height: 320px;
+  }
+
+  .filter-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .details-list {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .details-list dd {
+    margin-bottom: 6px;
+  }
+}
